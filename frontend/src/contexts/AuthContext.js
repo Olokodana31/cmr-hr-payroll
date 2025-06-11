@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const token = localStorage.getItem('token');
       if (token) {
-        const response = await axios.get('/api/auth/me', {
+        const response = await axios.get(`${API_URL}/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await axios.post(`${API_URL}/auth/login`, { email, password });
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       setUser(user);
@@ -44,13 +44,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (firstName, lastName, email, password) => {
+  const register = async (firstName, lastName, email, password, department) => {
     try {
-      const response = await axios.post('/api/auth/register', {
+      const response = await axios.post(`${API_URL}/auth/register`, {
         firstName,
         lastName,
         email,
         password,
+        department,
       });
       const { token, user } = response.data;
       localStorage.setItem('token', token);
@@ -69,7 +70,7 @@ export const AuthProvider = ({ children }) => {
 
   const socialLogin = async (provider, token) => {
     try {
-      const response = await axios.post(`/api/auth/${provider}`, { token });
+      const response = await axios.post(`${API_URL}/auth/${provider}`, { token });
       const { token: authToken, user } = response.data;
       localStorage.setItem('token', authToken);
       setUser(user);

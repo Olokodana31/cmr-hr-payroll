@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
+const { Pool } = require('pg');
 const cors = require('cors');
 const morgan = require('morgan');
 
@@ -16,13 +16,22 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/crm-hr-payroll', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// Database configuration
+const pool = new Pool({
+  user: process.env.POSTGRES_USER || 'crm_user',
+  host: process.env.POSTGRES_HOST || 'db',
+  database: process.env.POSTGRES_DB || 'crm_db',
+  password: process.env.POSTGRES_PASSWORD || 'crm_pass',
+  port: process.env.POSTGRES_PORT || 5432,
+});
+
+// Test database connection
+pool.connect()
+  .then(() => console.log('Connected to PostgreSQL'))
+  .catch(err => console.error('PostgreSQL connection error:', err));
+
+// Make pool available to routes
+app.locals.pool = pool;
 
 // Routes
 app.use('/api/auth', authRoutes);

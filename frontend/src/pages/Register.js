@@ -12,6 +12,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  MenuItem,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -19,6 +20,17 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { registerSchema } from '../utils/validationSchemas';
 import PasswordStrengthIndicator from '../components/PasswordStrengthIndicator';
+
+const departments = [
+  'Administration',
+  'Sales',
+  'Marketing',
+  'IT',
+  'HR',
+  'Finance',
+  'Operations',
+  'Customer Support',
+];
 
 function Register() {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -40,6 +52,7 @@ function Register() {
       email: '',
       password: '',
       confirmPassword: '',
+      department: '',
     },
   });
 
@@ -51,7 +64,8 @@ function Register() {
         data.firstName,
         data.lastName,
         data.email,
-        data.password
+        data.password,
+        data.department
       );
       navigate('/');
     } catch (error) {
@@ -124,6 +138,24 @@ function Register() {
                   helperText={errors.email?.message}
                   {...register('email')}
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  select
+                  id="department"
+                  label="Department"
+                  error={!!errors.department}
+                  helperText={errors.department?.message}
+                  {...register('department')}
+                >
+                  {departments.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
               <Grid item xs={12}>
                 <TextField
