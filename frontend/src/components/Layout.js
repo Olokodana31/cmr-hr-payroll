@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import {
   AppBar,
   Box,
@@ -12,6 +13,7 @@ import {
   ListItemText,
   Toolbar,
   Typography,
+  Button,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -19,6 +21,7 @@ import {
   People as PeopleIcon,
   Business as BusinessIcon,
   Payment as PaymentIcon,
+  Logout as LogoutIcon,
 } from '@mui/icons-material';
 
 const drawerWidth = 240;
@@ -34,9 +37,15 @@ function Layout({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
   const drawer = (
@@ -78,9 +87,17 @@ function Layout({ children }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             CRM, HR & Payroll
           </Typography>
+          <Button
+            color="inherit"
+            onClick={handleLogout}
+            startIcon={<LogoutIcon />}
+            sx={{ ml: 'auto' }}
+          >
+            Sign Out
+          </Button>
         </Toolbar>
       </AppBar>
       <Box
